@@ -1,0 +1,23 @@
+{
+  "name": "alurabank",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EddyeBoy27/angular-alurabank.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EddyeBoy27/angular-alurabank/issues"
+  },
+  "homepage": "https://github.com/EddyeBoy27/angular-alurabank#readme",
+  "devDependencies": {
+    "typescript": "^2.3.2"
+  }
+}

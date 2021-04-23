@@ -1,4 +1,4 @@
-class MensagemView {
+abstract class View<T> {
 
     private _elemento: Element;
 
@@ -6,11 +6,9 @@ class MensagemView {
         this._elemento = document.querySelector(seletor);
     }
 
-    update(model: string) {
+    update(model: T) {
         this._elemento.innerHTML = this.template(model);
     }
 
-    template(model: string): string {
-        return `<p class="alert alert-info">${model}</p>`;
-    }
+    abstract template(model: T): string;
 }

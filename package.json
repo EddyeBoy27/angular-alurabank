@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "tsc",
-    "start": "tsc -w",
+    "watch": "tsc -w",
+    "start": "concurrently \"npm run watch\" \"npm run server\"",
     "server": "lite-server --baseDir=app"
   },
   "repository": {
@@ -21,6 +22,7 @@
   "homepage": "https://github.com/EddyeBoy27/angular-alurabank#readme",
   "devDependencies": {
     "@types/jquery": "^2.0.42",
+    "concurrently": "^3.4.0",
     "lite-server": "^2.3.0",
     "typescript": "^2.3.2"
   }

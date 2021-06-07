@@ -2,6 +2,7 @@ import { MensagemView, NegociacoesView } from '../views/index';
 import { Negociacoes, Negociacao, NegociacaoParcial } from '../models/index';
 import { domInject, throttle } from '../helpers/decorators/index';
 import { NegociacaoService, ResponseHandler } from '../services/index';
+import { imprime } from '../helpers/index';
 
 let timer: number = 0;
 
@@ -23,26 +24,33 @@ export class NegociacaoController {
 		this._negociacoesView.update(this._negociacoes);
 	}
 
-	@throttle()
+	@throttle(timer)
 	importarDados() {
-		const isOk: ResponseHandler = (res: Response) => {
-			if (res.ok) {
-				return res;
-			} else {
-				throw new Error(res.statusText);
-			}
-		}
-    this._service
-      .obterNegociacoes(isOk)
-      .then(negociacoes => {
-        negociacoes.forEach(negociacao => this._negociacoes.adiciona(negociacao))
-      });
-        this._negociacoesView.update(this._negociacoes);
-  }
+		this._service
+			.obterNegociacoes(res => {
+				if (res.ok) {
+					return res;
+				} else {
+					throw new Error(res.statusText)
+				}
+			})
+			.then((negociacoesParaImportar: Negociacao[]) => {
+				const negociacoesJaImportadas = this._negociacoes.paraArray();
 
-  @throttle()
+				negociacoesParaImportar
+					.filter(negociacao =>
+						!negociacoesJaImportadas.some(jaImportada =>
+							negociacao.ehIgual(jaImportada)))
+					.forEach(negociacao => {
+						this._negociacoes.adiciona(negociacao)
+					});
+				
+				this._negociacoesView.update(this._negociacoes);
+			})
+	}
+
+  @throttle(timer)
 	adiciona(event: Event) {
-		const t1 = performance.now();
 		event.preventDefault();
 
 		let data = new Date(this._inputData.val().replace(/-/g, ','));
@@ -57,8 +65,7 @@ export class NegociacaoController {
 		this._negociacoes.adiciona(negociacao);
 		this._negociacoesView.update(this._negociacoes);
 		this._mensagemView.update('Negociação adicionada com sucesso!');
-		const t2 = performance.now();
-		console.log(`Tempo de execução do método adiciona(): ${(t2 - t1) / 1000} segundos`);
+		imprime(negociacao, this._negociacoes);
 	}
 
 	private _ehDiaUtil(data: Date) {
